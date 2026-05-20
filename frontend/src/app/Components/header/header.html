@@ -1,0 +1,188 @@
+<mat-toolbar class="top-header">
+
+    <!-- Left -->
+    <div class="left">
+        <div class="header-logo-container" *ngIf="isSidebarOpened">
+            <img src="/icons/app_logo.png" class="header-logo" alt="CRM Logo">
+        </div>
+
+        <div class="header-item">
+            <button mat-icon-button (click)="toggleSidebar.emit()">
+                <mat-icon>menu</mat-icon>
+            </button>
+        </div>
+
+        <div class="header-item no-divider">
+            <div class="location" (click)="openLocationModal()" style="cursor:pointer">
+                <mat-icon>location_on</mat-icon>
+                <span>{{ selectedLocationName }}</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right -->
+    <div class="right">
+
+        <div class="header-item has-left-divider">
+            <button mat-stroked-button class="new-lead-btn" (click)="openNewLeadModal()">
+                <mat-icon>add</mat-icon>
+                New Lead
+            </button>
+        </div>
+
+        <div class="header-item">
+            <mat-icon>search</mat-icon>
+        </div>
+
+        <div class="header-item">
+            <mat-icon matBadge="26" matBadgeColor="warn" matBadgeSize="small">mail</mat-icon>
+        </div>
+
+        <div class="header-item">
+            <mat-icon>chat</mat-icon>
+        </div>
+
+        <div class="header-item">
+            <mat-icon>shortcut</mat-icon>
+        </div>
+
+        <div class="header-item">
+            <mat-icon>cloud</mat-icon>
+        </div>
+
+        <div class="header-item">
+            <mat-icon matBadge="7" matBadgeColor="warn" matBadgeSize="small">edit</mat-icon>
+        </div>
+
+        <div class="header-item">
+            <mat-icon>star</mat-icon>
+        </div>
+
+        <div class="header-item user-item" [matMenuTriggerFor]="profileMenu">
+            <div class="user">
+                <img src="assets/user.png">
+                <span>Omama Arshad</span>
+                <mat-icon class="arrow-icon">keyboard_arrow_down</mat-icon>
+            </div>
+        </div>
+
+        <mat-menu #profileMenu="matMenu" class="profile-menu-container">
+            <div class="profile-menu-header">
+                <div class="large-avatar">
+                    <img src="assets/user.png">
+                </div>
+                <div class="profile-info">
+                    <div class="profile-name">Omama Arshad</div>
+                    <div class="profile-email">omama.arshad@gmail.com</div>
+                </div>
+            </div>
+
+            <mat-divider></mat-divider>
+
+            <button mat-menu-item>
+                <mat-icon>sync</mat-icon>
+                <span>Change Status</span>
+            </button>
+
+            <mat-divider></mat-divider>
+
+            <button mat-menu-item>
+                <mat-icon>star_border</mat-icon>
+                <span>Manage Favorites</span>
+            </button>
+
+            <mat-divider></mat-divider>
+
+            <button mat-menu-item>
+                <mat-icon>settings</mat-icon>
+                <span>User Settings</span>
+            </button>
+
+            <mat-divider></mat-divider>
+
+            <button mat-menu-item>
+                <mat-icon>logout</mat-icon>
+                <span>Log Out</span>
+            </button>
+        </mat-menu>
+
+    </div>
+
+</mat-toolbar>
+
+<!-- Select Location Modal -->
+<div class="modal-overlay" *ngIf="showLocationModal" (click)="closeLocationModal()">
+    <div class="location-modal" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+            <span>Select Location</span>
+            <mat-icon class="modal-close" (click)="closeLocationModal()">close</mat-icon>
+        </div>
+        <div class="modal-body">
+            <table class="location-table">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Name</th>
+                        <th>Dealer ID</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let loc of locations">
+                        <td><input type="checkbox" [(ngModel)]="loc.selected"></td>
+                        <td class="loc-name" [class.checked]="loc.selected">{{ loc.name }}</td>
+                        <td class="loc-id">{{ loc.dealerId }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="modal-footer">
+            <button class="modal-cancel-btn" (click)="closeLocationModal()">Cancel</button>
+            <button class="modal-ok-btn" (click)="confirmLocation()">OK</button>
+        </div>
+    </div>
+</div>
+
+<!-- Search Contact Leads Modal -->
+<div class="modal-overlay" *ngIf="showNewLeadModal" (click)="closeNewLeadModal()">
+    <div class="new-lead-modal" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+            <span>Search Contact Leads</span>
+            <mat-icon class="modal-close" (click)="closeNewLeadModal()">close</mat-icon>
+        </div>
+        <div class="modal-body search-lead-body">
+            <div class="search-input-group">
+                <mat-icon class="search-icon">search</mat-icon>
+                <input type="text" [(ngModel)]="searchQuery" (ngModelChange)="onSearchChange()" placeholder="Type minimum 3 characters for Name, Company, Phone Number or Full Email Address" class="search-lead-input">
+                <button class="start-new-lead-btn" (click)="navigateToStartNewLead()">Start New Lead</button>
+            </div>
+
+            <!-- Search Results -->
+            <div class="search-results-container" *ngIf="searchResults.length > 0">
+                <div class="search-result-item" *ngFor="let lead of searchResults" (click)="selectSearchResult(lead)">
+                    <div class="lead-info">
+                        <span class="lead-name">{{ lead.first_name }} {{ lead.last_name }}</span>
+                        <span class="lead-email">{{ lead.email }}</span>
+                    </div>
+                    <div class="lead-meta">
+                        <span class="lead-company">{{ lead.company_name }}</span>
+                        <span class="lead-phone">{{ lead.phone || lead.cell || 'No Phone' }}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="search-lead-options">
+                <div class="lead-range-group">
+                    <label>Lead Range</label>
+                    <select class="lead-range-select">
+                        <option value="two-years">Two Years</option>
+                        <option value="one-year">One Year</option>
+                        <option value="all">All</option>
+                    </select>
+                </div>
+                <div class="only-open-group">
+                    <input type="checkbox" id="onlyOpenLead">
+                    <label for="onlyOpenLead">Only Open Lead</label>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

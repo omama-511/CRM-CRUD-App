@@ -1,0 +1,43 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+/* Fix Material button layout for Saved Searches / Quick Search */
+button.action-btn {
+    min-width: 0 !important;
+    padding: 0 !important;
+}
+
+button.action-btn .mat-mdc-button-touch-target,
+button.action-btn .mdc-button__ripple,
+button.action-btn .mat-mdc-button-persistent-ripple,
+button.action-btn .mat-ripple,
+button.action-btn .mat-mdc-button-ripple {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+}
+
+button.action-btn .mdc-button__label {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    white-space: nowrap !important;
+}
+
+/* Global Toast Notification Styles */
+.success-snackbar {
+    --mdc-snackbar-container-color: #2ecc71;
+    --mat-snack-bar-button-color: #ffffff;
+    --mdc-snackbar-supporting-text-color: #ffffff;
+    font-weight: 500;
+}
+
+.error-snackbar {
+    --mdc-snackbar-container-color: #e74c3c;
+    --mat-snack-bar-button-color: #ffffff;
+    --mdc-snackbar-supporting-text-color: #ffffff;
+    font-weight: 500;
+}

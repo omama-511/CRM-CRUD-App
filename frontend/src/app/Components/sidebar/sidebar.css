@@ -1,0 +1,176 @@
+.sidebar-container {
+    background-color: #333;
+    color: white;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    width: 260px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Logo styles moved to header component */
+
+
+/* Nav List */
+.nav-list {
+    padding-top: 0 !important;
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
+.nav-item {
+    height: 50px !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    color: #ccc !important;
+    cursor: pointer;
+}
+
+.nav-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.nav-item.active {
+    background-color: #0060a9 !important;
+}
+
+::ng-deep .nav-item .mat-mdc-list-item-title {
+    color: #ccc !important;
+}
+
+::ng-deep .nav-item:hover .mat-mdc-list-item-title,
+::ng-deep .nav-item.active .mat-mdc-list-item-title {
+    color: white !important;
+}
+
+mat-icon[matListItemIcon] {
+    color: inherit !important;
+    margin-right: 15px !important;
+}
+
+::ng-deep .mat-mdc-list-item-meta.material-icons,
+::ng-deep .mat-mdc-list-item-meta .material-icons {
+    font-family: 'Material Icons' !important;
+    font-size: 20px !important;
+    width: 20px !important;
+    height: 20px !important;
+    color: #888 !important;
+    display: inline-block !important;
+    line-height: 1 !important;
+    text-transform: none !important;
+    letter-spacing: normal !important;
+    word-wrap: normal !important;
+    white-space: nowrap !important;
+    direction: ltr !important;
+}
+
+::ng-deep .nav-expansion-panel {
+    background: transparent !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+}
+
+::ng-deep .nav-expansion-panel .mat-expansion-panel-header {
+    padding: 0 16px !important;
+    height: 50px !important;
+    background-color: #222 !important;
+}
+
+::ng-deep .nav-expansion-panel .mat-expansion-panel-header.active {
+    background-color: #0060a9 !important;
+}
+
+::ng-deep .nav-expansion-panel .mat-expansion-panel-header-title {
+    color: #ccc !important;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+::ng-deep .nav-expansion-panel .mat-expansion-panel-header.active .mat-expansion-panel-header-title {
+    color: white !important;
+}
+
+::ng-deep .nav-expansion-panel .mat-expansion-panel-content .mat-expansion-panel-body {
+    padding: 0 !important;
+}
+
+/* Sub Navigation */
+.sub-nav {
+    background-color: #000;
+}
+
+.sub-nav-item {
+    height: 40px !important;
+    padding-left: 55px !important;
+    font-size: 13px !important;
+    color: #aaa !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.sub-nav-item:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+::ng-deep .sub-nav-item,
+::ng-deep .sub-nav-item .mat-mdc-list-item-title,
+::ng-deep .sub-nav-item .mdc-list-item__primary-text {
+    color: #aaa !important;
+}
+
+::ng-deep .sub-nav-item:hover,
+::ng-deep .sub-nav-item:hover .mat-mdc-list-item-title,
+::ng-deep .sub-nav-item:hover .mdc-list-item__primary-text {
+    color: white !important;
+}
+
+/* Footer */
+.sidebar-footer {
+    background-color: #222;
+    padding: 15px;
+    font-size: 12px;
+}
+
+.contact-info {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.contact-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-style: italic;
+    color: white;
+}
+
+.contact-item mat-icon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+}
+
+.footer-links {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    color: #888;
+}
+
+.footer-links a {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.footer-links a:hover {
+    text-decoration: underline;
+}
+
+.copyright {
+    margin-top: 10px;
+    line-height: 1.4;
+}

@@ -1,0 +1,547 @@
+.top-header {
+    background-color: #0060a9 !important;
+    color: white;
+    height: 60px;
+    /* Standard toolbar height for this look */
+    min-height: 60px;
+    padding: 0 !important;
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2); /* Added the subtle line below */
+}
+
+.left,
+.right {
+    display: flex;
+    align-items: stretch;
+}
+
+/* Base style for each item in the header */
+.header-item {
+    display: flex;
+    align-items: center;
+    padding: 0 8px;
+    border-right: 1px solid rgba(255, 255, 255, 0.25); /* More visible divider */
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.header-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.header-item.no-padding {
+    padding: 0;
+}
+
+.header-item.no-divider {
+    border-right: none;
+}
+
+.header-item.has-left-divider {
+    border-left: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.header-item.user-item {
+    border-right: none;
+    padding-right: 15px;
+}
+
+/* Logo Section in Header */
+.header-logo-container {
+    width: 260px;
+    /* Match sidebar width */
+    height: 100%;
+    display: flex;
+    align-items: center;
+    padding: 0 15px;
+    background-color: #0072bc;
+    /* Slightly lighter than #0060a9 */
+    flex-shrink: 0;
+}
+
+.header-logo {
+    height: 35px;
+    width: auto;
+    object-fit: contain;
+}
+
+/* Location Text */
+.location {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.location mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+}
+
+/* Buttons */
+.new-lead-btn {
+    border: none !important; 
+    background: transparent !important; 
+    color: white !important;
+    height: 100% !important; 
+    padding: 0 5px !important; /* Tightened padding since container has padding */
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    border-radius: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    box-shadow: none !important;
+}
+
+.new-lead-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.new-lead-btn mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    margin-right: 4px;
+}
+
+/* Icons */
+mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+button[mat-icon-button] {
+    width: 36px !important;
+    height: 36px !important;
+    line-height: 36px !important;
+    color: white !important;
+}
+
+/* Badges */
+::ng-deep .mat-badge-content {
+    font-size: 10px !important;
+    width: 16px !important;
+    height: 16px !important;
+    line-height: 16px !important;
+    top: -4px !important;
+    right: -4px !important;
+}
+
+/* User Profile */
+.user {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.user img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 1px solid #cddc39;
+    /* Lime border from image */
+    background-color: #eee;
+}
+
+.arrow-icon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+}
+
+/* Material Toolbar Overrides */
+.mat-toolbar-single-row {
+    height: 60px;
+}
+
+/* Profile Menu Styling */
+.profile-menu-header {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    gap: 12px;
+    background-color: #fff;
+}
+
+.large-avatar img {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background-color: #eee;
+    object-fit: cover;
+}
+
+.profile-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.profile-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: #333;
+    line-height: 1.2;
+}
+
+.profile-email {
+    font-size: 12px;
+    color: #777;
+    margin-top: 1px;
+}
+
+/* Material Menu Overrides */
+::ng-deep .profile-menu-container {
+    margin-top: 4px;
+    min-width: 200px !important;
+    border-radius: 6px !important;
+    overflow: hidden !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12) !important;
+}
+
+::ng-deep .profile-menu-container .mat-mdc-menu-content {
+    padding: 0 !important;
+}
+
+button[mat-menu-item] {
+    height: 44px !important;
+    font-size: 14px !important;
+    color: #444 !important;
+    padding: 0 16px !important;
+}
+
+button[mat-menu-item] mat-icon {
+    margin-right: 12px !important;
+    color: #5f6368 !important;
+    font-size: 20px !important;
+    width: 20px !important;
+    height: 20px !important;
+}
+
+mat-divider {
+    border-top-color: #f0f0f0 !important;
+}
+
+/* ---- Select Location Modal ---- */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.location-modal {
+    background: white;
+    border-radius: 4px;
+    width: 600px;
+    max-width: 90vw;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+.modal-header {
+    background-color: #0060a9;
+    color: white;
+    font-size: 16px;
+    font-weight: 500;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-close {
+    cursor: pointer;
+    font-size: 24px !important;
+    width: 24px !important;
+    height: 24px !important;
+    color: white;
+    opacity: 0.8;
+}
+.modal-close:hover { opacity: 1; }
+
+.modal-body {
+    padding: 0;
+}
+
+.location-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.location-table thead tr {
+    background: #f1f3f4;
+}
+
+.location-table th {
+    padding: 10px 15px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #3c4043;
+    text-align: left;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.location-table th:last-child {
+    text-align: right;
+}
+
+.location-table td {
+    padding: 12px 15px;
+    font-size: 13px;
+    border-bottom: 1px solid #f1f3f4;
+    vertical-align: middle;
+}
+
+.location-table td:last-child {
+    text-align: right;
+    color: #3c4043;
+}
+
+.location-table td input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: #0060a9;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+.loc-name {
+    color: #0060a9;
+    font-weight: 400;
+}
+
+/* Specific colors from user image */
+.location-table tbody tr:nth-child(2) .loc-name { color: #9c27b0; } /* Sunset is purple */
+
+.modal-footer {
+    padding: 15px 20px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 20px;
+}
+
+.modal-cancel-btn {
+    background: none;
+    border: none;
+    color: #0060a9;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 8px;
+}
+
+.modal-ok-btn {
+    padding: 8px 35px;
+    background: #0060a9;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 600;
+    color: white;
+    cursor: pointer;
+}
+.modal-ok-btn:hover { background: #005090; }
+
+/* ---- Search Contact Leads Modal ---- */
+.new-lead-modal {
+    background: white;
+    border-radius: 4px;
+    width: 900px;
+    max-width: 95vw;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+.search-lead-body {
+    padding: 30px 20px 40px 20px;
+}
+
+.search-input-group {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.search-icon {
+    position: absolute;
+    left: 15px;
+    color: #9aa0a6;
+    font-size: 20px;
+}
+
+.search-lead-input {
+    flex: 1;
+    height: 44px;
+    padding: 0 15px 0 45px;
+    border: 1px solid #dadce0;
+    border-radius: 4px;
+    font-size: 14px;
+    color: #3c4043;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.search-lead-input:focus {
+    border-color: #0060a9;
+}
+
+.search-lead-input::placeholder {
+    color: #9aa0a6;
+}
+
+.start-new-lead-btn {
+    height: 44px;
+    padding: 0 25px;
+    background-color: #0060a9;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 0.2s;
+}
+
+.start-new-lead-btn:hover {
+    background-color: #005090;
+}
+
+.search-lead-options {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 30px;
+}
+
+.lead-range-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: #3c4043;
+}
+
+.lead-range-select {
+    height: 32px;
+    padding: 0 30px 0 10px;
+    border: 1px solid #dadce0;
+    border-radius: 4px;
+    font-size: 13px;
+    color: #3c4043;
+    outline: none;
+    background-color: white;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%239aa0a6%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 10px auto;
+}
+
+.only-open-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: #3c4043;
+}
+
+.only-open-group input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: #0060a9;
+    cursor: pointer;
+    margin: 0;
+}
+
+.only-open-group label {
+    cursor: pointer;
+}
+
+/* Search Results Styles */
+.search-results-container {
+    background: #f8f9fa;
+    border: 1px solid #dadce0;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    max-height: 300px;
+    overflow-y: auto;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.search-result-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 15px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.search-result-item:last-child {
+    border-bottom: none;
+}
+
+.search-result-item:hover {
+    background-color: #e8f0fe;
+}
+
+.lead-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.lead-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #0060a9;
+}
+
+.lead-email {
+    font-size: 12px;
+    color: #5f6368;
+}
+
+.lead-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+}
+
+.lead-company {
+    font-size: 13px;
+    font-weight: 500;
+    color: #3c4043;
+}
+
+.lead-phone {
+    font-size: 12px;
+    color: #5f6368;
+}

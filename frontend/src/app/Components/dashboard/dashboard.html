@@ -1,0 +1,959 @@
+<ng-container>
+    <div class="dashboard-container">
+        <!-- Left Column: Search & Leads List -->
+        <div class="leads-column">
+            <div class="page-header">
+                <h1 class="page-title">Leads</h1>
+                <div class="page-date">
+                    Today, {{ currentDate | date: 'MMMM d, y' }} | {{ currentDate | date: 'h:mm a' }}
+                </div>
+            </div>
+
+            <div class="leads-card">
+                <!-- Search Header -->
+                <div class="card-search-header">
+                    <div class="search-bar-container">
+                        <div class="search-bar">
+                            <mat-icon>search</mat-icon>
+                            <input type="text" placeholder="Search leads...">
+                        </div>
+                        <button mat-icon-button class="filter-btn">
+                            <mat-icon>filter_alt</mat-icon>
+                        </button>
+                    </div>
+
+                    <div class="quick-actions">
+                        <button mat-button class="header-action-btn">
+                            <mat-icon>search</mat-icon>
+                            <span>Saved Searches</span>
+                        </button>
+                        <button mat-button class="header-action-btn">
+                            <mat-icon>bolt</mat-icon>
+                            <span>Quick Search</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Filter Area -->
+                <div class="filter-area">
+                    <mat-chip-set class="chip-filters">
+                        <mat-chip selected>All Leads</mat-chip>
+                        <mat-chip>
+                            <img src="/icons/airocket.svg" class="ai-rocket-icon" alt="rocket"> AI Lead Response
+                        </mat-chip>
+                        <mat-chip>Phone lead</mat-chip>
+                    </mat-chip-set>
+
+                    <div class="status-filters">
+                        <button mat-flat-button class="active-filter-btn">Active</button>
+                        <button mat-stroked-button>Sold</button>
+                        <button mat-stroked-button>Archive</button>
+                        <button mat-stroked-button>All</button>
+                    </div>
+                </div>
+
+                <!-- Leads List -->
+                <div class="leads-list-container">
+                    <div class="leads-count">{{ leads().length * 201 }} Leads found</div>
+
+                    <div class="leads-scroll-area">
+                        <div *ngFor="let lead of leads()" class="lead-item" (click)="selectLead(lead)">
+                            <div class="lead-indicator" [class.active]="lead.status === 'Active'"></div>
+                            <div class="lead-content">
+                                <div class="lead-header">
+                                    <div>
+                                        <span class="lead-name">{{ lead.name }} </span>
+                                        <span class="lead-type"
+                                            [ngClass]="{'showroom': lead.type === 'Showroom Lead', 'phone': lead.type === 'Phone Call'}">{{
+                                            lead.type }}</span>
+                                    </div>
+                                    <mat-icon class="lock-icon"
+                                        [ngClass]="{'showroom': lead.type === 'Showroom Lead', 'phone': lead.type === 'Phone Call'}">lock_open</mat-icon>
+                                </div>
+                                <div class="lead-details">
+                                    <div class="detail-row">
+                                        <mat-icon>mail_outline</mat-icon>
+                                        <span>: {{ lead.email }}</span>
+                                    </div>
+                                    <div class="detail-row">
+                                        <mat-icon>person_outline</mat-icon>
+                                        <span>: {{ lead.assignee }}</span>
+                                    </div>
+                                    <div class="detail-row">
+                                        <mat-icon>directions_car_filled</mat-icon>
+                                        <span>: Not Sold</span>
+                                    </div>
+                                    <div class="detail-row">
+                                        <mat-icon>access_time</mat-icon>
+                                        <span class="highlight-time">: {{ lead.time }}</span>
+                                        <span class="source-text">- {{ lead.source }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pagination -->
+                <div class="card-footer">
+                    <div class="show-count">
+                        <span>Show</span>
+                        <div class="select-wrapper">
+                            <select>
+                                <option>10</option>
+                                <option>20</option>
+                                <option>50</option>
+                            </select>
+                            <mat-icon>keyboard_arrow_down</mat-icon>
+                        </div>
+                    </div>
+                    <div class="pagination">
+                        <span>1 of 403</span>
+                        <div class="page-btns">
+                            <button mat-icon-button><mat-icon>chevron_left</mat-icon></button>
+                            <button mat-icon-button><mat-icon>chevron_right</mat-icon></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Lead Detail -->
+        <div class="details-column">
+            <div class="view-toggle">
+                <button mat-icon-button><mat-icon>menu</mat-icon></button>
+                <button mat-icon-button><mat-icon>grid_view</mat-icon></button>
+            </div>
+
+            <div class="lead-detail-card" *ngIf="selectedLead()">
+                <!-- Header -->
+                <div class="detail-header" (mouseenter)="showroomTooltip=true" (mouseleave)="showroomTooltip=false">
+                    <div class="header-main">
+                        <div class="avatar-section">
+                            <div class="avatar-circle">
+                                {{ selectedLead()?.initials }}
+                                <div class="online-indicator"></div>
+                            </div>
+                            <!-- Hover detail box: positioned left of avatar -->
+                            <div class="header-hover-detail" *ngIf="showroomTooltip">In Showroom<br>Check-In/Out</div>
+                            <div class="quick-status">
+                                <div><mat-icon class="icon-green">lock_open</mat-icon> {{ selectedLead()?.status }}</div>
+                                <div><mat-icon class="icon-yellow">directions_car</mat-icon> {{ selectedLead()?.soldStatus
+                                    }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="info-section">
+                            <div class="name-line">
+                                <span class="name" *ngIf="!editingFields['name']">
+                                    {{ selectedLead()?.name }}
+                                    <div class="edit-circle inline" (click)="toggleEdit('name')">
+                                        <mat-icon>edit</mat-icon>
+                                    </div>
+                                    (sdf) |
+                                </span>
+                                <span class="name" *ngIf="editingFields['name']">
+                                    <input [ngModel]="selectedLead()?.name" (ngModelChange)="selectedLead() && selectedLead()!.name = $event" (blur)="toggleEdit('name')"
+                                        (keyup.enter)="toggleEdit('name')" class="edit-input-header">
+                                    |
+                                </span>
+                                <span class="type"
+                                    [ngClass]="{'showroom': selectedLead()?.type === 'Showroom Lead', 'phone': selectedLead()?.type === 'Phone Call'}">{{
+                                    selectedLead()?.type }}</span>
+                                <div class="action-icons">
+                                    <mat-icon class="star-icon">star_border</mat-icon>
+                                    <div class="white-box">D</div>
+                                    <div class="icon-square"><mat-icon>shopping_cart</mat-icon></div>
+                                    <div class="icon-square"><mat-icon>visibility</mat-icon></div>
+                                    <div class="icon-square orange tooltip-wrapper">
+                                        <mat-icon>auto_awesome</mat-icon>
+                                        <div class="custom-tooltip">
+                                            <span>In Showroom</span>
+                                            <span>Check-In/Out</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="customer-info">Returning Customer at: Sunset</div>
+                            <div class="contact-line">
+                                <span class="item" *ngIf="!editingFields['phone']">
+                                    <mat-icon>call</mat-icon>
+                                    {{ selectedLead()?.phone }}
+                                    <div class="edit-circle" (click)="toggleEdit('phone')">
+                                        <mat-icon>edit</mat-icon>
+                                    </div>
+                                </span>
+                                <span class="item" *ngIf="editingFields['phone']">
+                                    <mat-icon>call</mat-icon>
+                                    <input [ngModel]="selectedLead()?.phone" (ngModelChange)="selectedLead() && selectedLead()!.phone = $event" (blur)="toggleEdit('phone')"
+                                        (keyup.enter)="toggleEdit('phone')" class="edit-input-contact">
+                                </span>
+
+                                <span class="item" *ngIf="!editingFields['email']">
+                                    <mat-icon>mail_outline</mat-icon>
+                                    {{ selectedLead()?.email }}
+                                    <div class="edit-circle" (click)="toggleEdit('email')">
+                                        <mat-icon>edit</mat-icon>
+                                    </div>
+                                </span>
+                                <span class="item" *ngIf="editingFields['email']">
+                                    <mat-icon>mail_outline</mat-icon>
+                                    <input [ngModel]="selectedLead()?.email" (ngModelChange)="selectedLead() && selectedLead()!.email = $event" (blur)="toggleEdit('email')"
+                                        (keyup.enter)="toggleEdit('email')" class="edit-input-contact">
+                                </span>
+                            </div>
+                            <div class="location-line">
+                                <mat-icon>location_on</mat-icon> United States
+                            </div>
+                        </div>
+
+                        <div class="actions-section">
+                            <div class="date-stamp">Created Date: <strong>Nov 11, 2019 07:36 PM</strong></div>
+                            <div class="btn-group">
+                                <button mat-flat-button class="response-btn" [matMenuTriggerFor]="quickResponseMenu">
+                                    <span>Quick Response</span>
+                                    <mat-icon>keyboard_arrow_down</mat-icon>
+                                </button>
+                                <mat-menu #quickResponseMenu="matMenu" class="custom-qr-menu">
+                                    <button mat-menu-item>
+                                        <mat-icon class="menu-icon-green">event</mat-icon>
+                                        <span>Set an Appointment</span>
+                                    </button>
+                                    <button mat-menu-item>
+                                        <mat-icon class="menu-icon-green">phone_callback</mat-icon>
+                                        <span>Call Update</span>
+                                    </button>
+                                </mat-menu>
+                                <button mat-icon-button class="more-btn" [matMenuTriggerFor]="moreMenu">
+                                    <mat-icon>more_horiz</mat-icon>
+                                </button>
+                                <mat-menu #moreMenu="matMenu">
+                                    <button mat-menu-item (click)="openEditLeadModal()">
+                                        <mat-icon style="color: #2980b9;">edit</mat-icon>
+                                        <span style="color: #2980b9;">Edit Lead</span>
+                                    </button>
+                                    <button mat-menu-item (click)="deleteLead(selectedLead()?.id)">
+                                        <mat-icon style="color: #f44336;">delete</mat-icon>
+                                        <span style="color: #f44336;">Delete Lead</span>
+                                    </button>
+                                </mat-menu>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabs -->
+                <div class="detail-tabs">
+                    <div class="tab" [class.active]="activeTab === 'Lead Detail'" (click)="setActiveTab('Lead Detail')">
+                        Lead
+                        Detail</div>
+                    <div class="tab" [class.active]="activeTab === 'Open Events'" (click)="setActiveTab('Open Events')">
+                        Open
+                        Events</div>
+                    <div class="tab" [class.active]="activeTab === 'Vehicle'" (click)="setActiveTab('Vehicle')">Vehicle
+                    </div>
+                    <div class="tab" [class.active]="activeTab === 'History'" (click)="setActiveTab('History')">History
+                    </div>
+                </div>
+
+                <!-- Content Area -->
+                <div class="detail-body">
+                    <!-- Timeline Flow -->
+                    <div class="timeline-scroll" *ngIf="activeTab === 'Lead Detail'">
+                        <div class="timeline-inner">
+                            <div class="timeline">
+                                <div class="step completed">
+                                    <div class="icon"><mat-icon>edit</mat-icon></div>
+                                    <div class="label">New Lead</div>
+                                </div>
+                                <div class="step completed">
+                                    <div class="icon"><mat-icon>edit</mat-icon></div>
+                                    <div class="label">Greet</div>
+                                </div>
+                                <div class="step completed">
+                                    <div class="icon"><mat-icon>edit</mat-icon></div>
+                                    <div class="label">Identify</div>
+                                </div>
+                                <div class="step completed">
+                                    <div class="icon"><mat-icon>edit</mat-icon></div>
+                                    <div class="label">Sit Down</div>
+                                </div>
+                                <div class="step active">
+                                    <div class="icon"><mat-icon>edit</mat-icon></div>
+                                    <div class="label">Write Up</div>
+                                </div>
+                                <div class="step">
+                                    <div class="icon"><mat-icon>edit</mat-icon></div>
+                                    <div class="label">F/I</div>
+                                </div>
+                                <div class="step">
+                                    <div class="icon"><mat-icon>edit</mat-icon></div>
+                                    <div class="label">Close</div>
+                                </div>
+                                <div class="step">
+                                    <div class="icon"><mat-icon>edit</mat-icon></div>
+                                    <div class="label" style="text-align: center">Sold Update -<br>Floor</div>
+                                </div>
+                            </div>
+                            <div class="timeline-bar">
+                                <div class="fill"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Open Events Section -->
+                    <div class="open-events-section" *ngIf="activeTab === 'Open Events'">
+                        <div class="open-events-header">
+                            <h3>Open Events</h3>
+                            <button mat-flat-button class="manage-events-btn" [matMenuTriggerFor]="manageEventsMenu">
+                                Manage Events <mat-icon>keyboard_arrow_down</mat-icon>
+                            </button>
+                            <mat-menu #manageEventsMenu="matMenu" class="manage-events-menu">
+                                <button mat-menu-item (click)="onAddEvent()">
+                                    <span>Add Events</span>
+                                </button>
+                                <button mat-menu-item disabled>
+                                    <span class="text-grey">Mark as Canceled</span>
+                                </button>
+                                <button mat-menu-item disabled>
+                                    <span class="text-grey">Update Event Owner</span>
+                                </button>
+                            </mat-menu>
+                        </div>
+                        <table class="events-table">
+                            <thead>
+                                <tr>
+                                    <th><input type="checkbox"></th>
+                                    <th>Event Type</th>
+                                    <th>Event Description</th>
+                                    <th class="text-blue">Follow-up Date</th>
+                                    <th>Event Owner</th>
+                                    <th>Event Status</th>
+                                    <th>Event Confirmation</th>
+                                    <th>Confirmation Date</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let event of events(); let i = index" class="event-row">
+                                    <td><input type="checkbox" class="styled-checkbox"></td>
+                                    <td>{{ event.type }}</td>
+                                    <td class="text-italic text-light">
+                                        {{ event.description || 'No Event Description Added' }}
+                                    </td>
+                                    <td class="text-blue date-cell">
+                                        <div class="date-main">{{ event.date }}</div>
+                                        <div class="date-sub">{{ event.startTime }}</div>
+                                    </td>
+                                    <td>{{ event.salesPerson }}</td>
+                                    <td>{{ event.status }}</td>
+                                    <td><input type="checkbox" class="styled-checkbox"></td>
+                                    <td>-</td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <div class="action-btn btn-teal">
+                                                <mat-icon>domain</mat-icon>
+                                            </div>
+                                            <div class="action-btn btn-blue" (click)="editEvent(i)">
+                                                <mat-icon>edit</mat-icon>
+                                            </div>
+                                            <div class="action-btn btn-red" (click)="deleteEvent(i)">
+                                                <mat-icon>delete</mat-icon>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Vehicle Section -->
+                    <div class="vehicle-section" *ngIf="activeTab === 'Vehicle'">
+                        <div class="sub-tabs">
+                            <div class="sub-tab active">Vehicle of Interest (1)</div>
+                            <div class="sub-tab">Vehicle Trade (1)</div>
+                            <div class="sub-tab">Vehicle Match</div>
+                            <div class="sub-tab">Alerts History</div>
+                        </div>
+                        <div class="vehicle-content">
+                            <div class="vehicle-image-col">
+                                <div class="image-placeholder">
+                                    <mat-icon>photo_camera</mat-icon>
+                                    <div>IMAGE NOT AVAILABLE</div>
+                                </div>
+                                <button class="add-vehicle-btn"><img src="icons/bg_icon.png" alt="add icon"> Add Vehicle</button>
+                            </div>
+                            <div class="vehicle-details-col">
+                                <div class="vehicle-title-row">
+                                    <h3 class="vehicle-title">2009 American IronHorse Motorcycles<br>Ridley Auto-Glide
+                                        Classic</h3>
+                                    <div class="vehicle-actions">
+                                        <mat-icon>edit</mat-icon>
+                                        <mat-icon>delete_outline</mat-icon>
+                                    </div>
+                                </div>
+                                <div class="vehicle-info-grid">
+                                    <div class="info-col">
+                                        <div><strong>Year:</strong> 2009</div>
+                                        <div><strong>Make:</strong> American IronHorse Motorcycles</div>
+                                        <div><strong>Model:</strong> Ridley Auto-Glide</div>
+                                        <div><strong>Trim:</strong> Classic</div>
+                                        <div class="mt-2"><strong>MSRP:</strong></div>
+                                        <div class="mt-2"><strong>Category:</strong> Motorcycle / Scooter</div>
+                                        <div><strong>Class:</strong> Chopper</div>
+                                        <div><strong>Description:</strong> <a href="#">View Description</a></div>
+                                    </div>
+                                    <div class="info-col right">
+                                        <div><strong>Condition:</strong> Any</div>
+                                        <div class="mt-2"><strong>Stock Number:</strong> 4567</div>
+                                        <div class="mt-3"><strong>Vin:</strong></div>
+                                        <div><strong>Not in Current Inventory</strong></div>
+                                    </div>
+                                    <button mat-flat-button class="check-stock-btn">Check Stock</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- History Section -->
+                    <div class="history-section" *ngIf="activeTab === 'History'">
+                        <div class="sub-tabs">
+                            <div class="sub-tab active">Lead (1)</div>
+                            <div class="sub-tab">Lead Transfer (1)</div>
+                            <div class="sub-tab">Marketing</div>
+                            <div class="sub-tab">Tag Update (2)</div>
+                            <div class="sub-tab bg-gray">All (1)</div>
+                        </div>
+                        <table class="history-table">
+                            <thead>
+                                <tr>
+                                    <th>Lead Owner</th>
+                                    <th>Performed By</th>
+                                    <th>Step</th>
+                                    <th>Notes</th>
+                                    <th>Date</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Antawari Torre</td>
+                                    <td>Merin T</td>
+                                    <td>New Lead</td>
+                                    <td><strong>Merin T:</strong><br>In Showroom - Start</td>
+                                    <td>May 07, 2026 12:28 PM</td>
+                                    <td>In Showroom</td>
+                                </tr>
+                                <tr>
+                                    <td>John Doe</td>
+                                    <td>System</td>
+                                    <td>Status Update</td>
+                                    <td><strong>System:</strong><br>Lead status changed to Active</td>
+                                    <td>May 07, 2026 01:15 PM</td>
+                                    <td>Auto-Update</td>
+                                </tr>
+                                <tr>
+                                    <td>Antawari Torre</td>
+                                    <td>Sarah J</td>
+                                    <td>Phone Call</td>
+                                    <td><strong>Sarah J:</strong><br>Customer requested callback in 2 hours</td>
+                                    <td>May 08, 2026 09:30 AM</td>
+                                    <td>Log Call</td>
+                                </tr>
+                                <tr>
+                                    <td>Jane Smith</td>
+                                    <td>Admin</td>
+                                    <td>Reassigned</td>
+                                    <td><strong>Admin:</strong><br>Lead reassigned to Antawari Torre</td>
+                                    <td>May 08, 2026 11:00 AM</td>
+                                    <td>Reassign</td>
+                                </tr>
+                                <tr>
+                                    <td>Antawari Torre</td>
+                                    <td>Merin T</td>
+                                    <td>Email Sent</td>
+                                    <td><strong>Merin T:</strong><br>Sent introductory email with brochure</td>
+                                    <td>May 09, 2026 03:45 PM</td>
+                                    <td>Send Email</td>
+                                </tr>
+                                <tr>
+                                    <td>Mike Ross</td>
+                                    <td>System</td>
+                                    <td>AI Response</td>
+                                    <td><strong>AI Agent:</strong><br>Sent automated booking confirmation</td>
+                                    <td>May 10, 2026 10:20 AM</td>
+                                    <td>AI Reply</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="pagination-footer">
+                            <span>1-1 of 1</span>
+                            <div class="page-controls">
+                                <button mat-icon-button disabled><mat-icon>chevron_left</mat-icon></button>
+                                <button class="page-btn active">1</button>
+                                <button mat-icon-button disabled><mat-icon>chevron_right</mat-icon></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Info Grid -->
+                    <div class="info-grid" *ngIf="activeTab === 'Lead Detail'">
+                        <div class="grid-row">
+                            <div class="item no-icon">
+                                <div class="item-text">
+                                    <label>This Lead is:</label>
+                                    <span>{{ selectedLead()?.status }}</span>
+                                </div>
+                            </div>
+                            <div class="item no-icon">
+                                <div class="item-text">
+                                    <label>Modified:</label>
+                                    <span>{{ selectedLead()?.modifiedDate }}</span>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="item-text">
+                                    <label>Sales Rep:</label>
+                                    <span *ngIf="!editingFields['salesRep']">{{ selectedLead()?.salesRep }}</span>
+                                    <input *ngIf="editingFields['salesRep']" [ngModel]="selectedLead()?.salesRep" (ngModelChange)="selectedLead() && selectedLead()!.salesRep = $event"
+                                        (blur)="toggleEdit('salesRep')" (keyup.enter)="toggleEdit('salesRep')"
+                                        class="edit-input-body">
+                                </div>
+                                <mat-icon class="edit" (click)="toggleEdit('salesRep')">edit</mat-icon>
+                            </div>
+                        </div>
+
+                        <div class="grid-row">
+                            <div class="item no-icon">
+                                <div class="item-text">
+                                    <label>Step:</label>
+                                    <span>{{ selectedLead()?.step }}</span>
+                                </div>
+                            </div>
+                            <div class="item no-icon">
+                                <div class="item-text">
+                                    <label>Dormant:</label>
+                                    <span>-</span>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="item-text">
+                                    <label>BDC Rep:</label>
+                                    <span>-</span>
+                                </div>
+                                <mat-icon class="edit" (click)="openTransferModal()">edit</mat-icon>
+                            </div>
+                        </div>
+
+                        <div class="grid-row">
+                            <div class="item">
+                                <div class="item-text">
+                                    <label>Tag:</label>
+                                    <span>{{ selectedLead()?.tag || '-' }}</span>
+                                </div>
+                                <mat-icon class="edit">edit</mat-icon>
+                            </div>
+                            <div class="item no-icon">
+                                <div class="item-text">
+                                    <label>Lead Age:</label>
+                                    <span>{{ selectedLead()?.leadAge }}</span>
+                                </div>
+                            </div>
+                            <div class="item no-icon">
+                                <div class="item-text">
+                                    <label>Originator:</label>
+                                    <span>{{ selectedLead()?.originator }}</span>
+                                    <small>{{ selectedLead()?.originatorSub }}</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid-row">
+                            <div class="item no-icon">
+                                <div class="item-text">
+                                    <label>Location:</label>
+                                    <span class="pill">{{
+                                        selectedLead()?.customerAt | uppercase }}</span>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="item-text">
+                                    <label>Confidence Level:</label>
+                                    <span>{{ selectedLead()?.confidence }}</span>
+                                </div>
+                                <mat-icon class="edit">edit</mat-icon>
+                            </div>
+                            <div class="item">
+                                <div class="item-text">
+                                    <label>Source:</label>
+                                    <span>{{ selectedLead()?.source }}</span>
+                                </div>
+                                <mat-icon class="edit">edit</mat-icon>
+                            </div>
+                        </div>
+
+                        <div class="grid-row">
+                            <div class="item">
+                                <div class="item-text">
+                                    <label>Department:</label>
+                                    <span *ngIf="!editingFields['department']">{{ selectedLead()?.department }}</span>
+                                    <input *ngIf="editingFields['department']" [ngModel]="selectedLead()?.department" (ngModelChange)="selectedLead() && selectedLead()!.department = $event"
+                                        (blur)="toggleEdit('department')" (keyup.enter)="toggleEdit('department')"
+                                        class="edit-input-body">
+                                </div>
+                                <mat-icon class="edit" (click)="toggleEdit('department')">edit</mat-icon>
+                            </div>
+                            <div class="item">
+                                <div class="item-text">
+                                    <label>Expected Purchase:</label>
+                                    <span>{{ selectedLead()?.purchase }}</span>
+                                </div>
+                                <mat-icon class="edit">edit</mat-icon>
+                            </div>
+                            <div class="item no-icon">
+                                <div class="item-text">
+                                    <label>DNC Status:</label>
+                                    <span>-</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid-row">
+                            <div class="item no-icon"></div>
+                            <div class="item no-icon"></div>
+                            <div class="item no-icon">
+                                <div class="item-text">
+                                    <label>Domain:</label>
+                                    <span>-</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Location Selection Modal — fixed overlay, inside component root -->
+    <div class="modal-overlay" *ngIf="showLocationModal" (click)="closeLocationModal()">
+        <div class="location-modal" (click)="$event.stopPropagation()">
+            <div class="modal-header">
+                <span>Select Location</span>
+                <mat-icon class="modal-close" (click)="closeLocationModal()">close</mat-icon>
+            </div>
+            <div class="modal-body">
+                <table class="location-table">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Name</th>
+                            <th>Dealer ID</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let loc of locations">
+                            <td><input type="checkbox" [(ngModel)]="loc.selected"></td>
+                            <td class="loc-name" [class.checked]="loc.selected">{{ loc.name }}</td>
+                            <td class="loc-id">{{ loc.dealerId }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-cancel-btn" (click)="closeLocationModal()">Cancel</button>
+                <button class="modal-ok-btn" (click)="confirmLocation()">OK</button>
+            </div>
+        </div>
+    </div>
+    <!-- Add Events Modal -->
+    <div class="modal-overlay" *ngIf="showAddEventModal">
+        <div class="add-event-modal">
+            <div class="modal-header">
+                <span>Add Events</span>
+                <mat-icon class="modal-close" (click)="closeAddEventModal()">close</mat-icon>
+            </div>
+
+            <div class="modal-content">
+                <!-- Top Tabs -->
+                <div class="modal-tabs">
+                    <button class="modal-tab active">Manually add follow-up</button>
+                    <button class="modal-tab">Add follow-up plan</button>
+                </div>
+
+                <div class="add-event-subhead">
+                    <span>Add Event</span>
+                    <mat-icon class="add-icon-blue">add_circle</mat-icon>
+                </div>
+
+                <!-- Form Section -->
+                <div class="event-form-container">
+                    <!-- Row 1 -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Type</label>
+                            <div class="custom-select-wrapper">
+                                <select [(ngModel)]="newEvent.type">
+                                    <option>Sales Appointment</option>
+                                    <option>Service Appointment</option>
+                                </select>
+                                <mat-icon>keyboard_arrow_down</mat-icon>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Status</label>
+                            <div class="custom-select-wrapper">
+                                <select [(ngModel)]="newEvent.status">
+                                    <option>Scheduled</option>
+                                    <option>Completed</option>
+                                </select>
+                                <mat-icon>keyboard_arrow_down</mat-icon>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Sales Person</label>
+                            <div class="custom-select-wrapper">
+                                <select [(ngModel)]="newEvent.salesPerson">
+                                    <option>M.Mahsam Abbas (Manager)</option>
+                                    <option>Admin User</option>
+                                </select>
+                                <mat-icon>keyboard_arrow_down</mat-icon>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Row 2 -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Department</label>
+                            <div class="custom-select-wrapper">
+                                <select [(ngModel)]="newEvent.department">
+                                    <option>Sales</option>
+                                    <option>Service</option>
+                                </select>
+                                <mat-icon>keyboard_arrow_down</mat-icon>
+                            </div>
+                        </div>
+                        <div class="form-group flex-2">
+                            <label>Event Description</label>
+                            <input type="text" [(ngModel)]="newEvent.description" class="form-input">
+                        </div>
+                        <div class="form-group radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="dateMode" value="day">
+                                <span>Day Counter</span>
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="dateMode" value="date" checked>
+                                <span>Date Picker</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Row 3 -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Select Date</label>
+                            <div class="input-with-icon">
+                                <input type="text" [(ngModel)]="newEvent.date" class="form-input">
+                                <mat-icon>calendar_today</mat-icon>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Start Time</label>
+                            <div class="input-with-icon">
+                                <input type="text" [(ngModel)]="newEvent.startTime" class="form-input">
+                                <mat-icon>access_time</mat-icon>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>End Time</label>
+                            <div class="input-with-icon">
+                                <input type="text" [(ngModel)]="newEvent.endTime" class="form-input">
+                                <mat-icon>access_time</mat-icon>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn-cancel-link" (click)="closeAddEventModal()">Cancel</button>
+                <button class="btn-save-event" (click)="saveEvent()">Add Follow-up</button>
+            </div>
+        </div>
+    </div>
+    <!-- Transfer Lead Modal -->
+    <div class="modal-overlay" *ngIf="showTransferModal" (click)="closeTransferModal()">
+        <div class="transfer-modal" (click)="$event.stopPropagation()">
+            <div class="modal-header">
+                <span>Transfer Lead</span>
+                <mat-icon class="modal-close" (click)="closeTransferModal()">close</mat-icon>
+            </div>
+
+            <div class="modal-content">
+                <div class="lead-info-summary">
+                    <div class="primary-info">
+                        <span class="name">{{ selectedLead()?.name }}</span>
+                        <span class="divider">|</span>
+                        <span class="type">{{ selectedLead()?.type }}</span>
+                    </div>
+                    <div class="secondary-info">
+                        <div class="info-row">
+                            <span class="label">Phone:</span> <span class="value">{{ selectedLead()?.phone }}</span>
+                            <span class="label">Email:</span> <span class="value">{{ selectedLead()?.email }}</span>
+                            <span class="label">Unit:</span> <span class="value">Not Sold</span>
+                            <span class="label">Sales Person:</span> <span class="value">--</span>
+                            <span class="label">Source:</span> <span class="value">{{ selectedLead()?.source }}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Vehicle of interest:</span> <span class="value">New 2016 Forest River
+                                364TS</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Trade Vehicle:</span> <span class="value">New 2016 Forest River
+                                364TS</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="transfer-form">
+                    <div class="form-row">
+                        <div class="form-group flex-1">
+                            <label>Dealers</label>
+                            <div class="custom-select-wrapper">
+                                <select>
+                                    <option>DP360 TEST Hawaii Marine - Sunset #1679</option>
+                                </select>
+                                <mat-icon>keyboard_arrow_down</mat-icon>
+                            </div>
+                        </div>
+                        <div class="form-group flex-1 has-filter">
+                            <label>Sales person</label>
+                            <div class="custom-select-wrapper">
+                                <select>
+                                    <option></option>
+                                </select>
+                                <mat-icon>keyboard_arrow_down</mat-icon>
+                            </div>
+                            <span class="filter-badge">Filter</span>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group flex-1">
+                            <label>Department</label>
+                            <div class="custom-select-wrapper">
+                                <select>
+                                    <option>Sales</option>
+                                </select>
+                                <mat-icon>keyboard_arrow_down</mat-icon>
+                            </div>
+                        </div>
+                        <div class="form-group flex-1">
+                            <label>Step</label>
+                            <div class="custom-select-wrapper">
+                                <select>
+                                    <option>New Lead</option>
+                                </select>
+                                <mat-icon>keyboard_arrow_down</mat-icon>
+                            </div>
+                        </div>
+                        <div class="form-group flex-1 has-filter">
+                            <label>Bdc Person</label>
+                            <div class="custom-select-wrapper">
+                                <select>
+                                    <option>Unassigned</option>
+                                </select>
+                                <mat-icon>keyboard_arrow_down</mat-icon>
+                            </div>
+                            <span class="filter-badge">Filter</span>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group flex-1">
+                            <label>Tag</label>
+                            <div class="custom-select-wrapper">
+                                <select>
+                                    <option></option>
+                                </select>
+                                <mat-icon>keyboard_arrow_down</mat-icon>
+                            </div>
+                        </div>
+                        <div class="form-group flex-1">
+                            <label>DNC Status</label>
+                            <div class="custom-select-wrapper">
+                                <select>
+                                    <option></option>
+                                </select>
+                                <mat-icon>keyboard_arrow_down</mat-icon>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group flex-1">
+                            <label>Notes</label>
+                            <textarea class="form-textarea" placeholder="Notes"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn-cancel-link" (click)="closeTransferModal()">Cancel</button>
+                <button class="btn-save-transfer" (click)="closeTransferModal()">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Lead Modal -->
+    <div class="modal-overlay" *ngIf="showEditLeadModal" (click)="closeEditLeadModal()">
+        <div class="edit-lead-modal" (click)="$event.stopPropagation()">
+            <div class="modal-header">
+                <span>Edit Lead Details</span>
+                <mat-icon class="modal-close" (click)="closeEditLeadModal()">close</mat-icon>
+            </div>
+            
+            <div class="modal-body">
+                <form class="edit-lead-form">
+                    <div class="form-row">
+                        <div class="form-group flex-1">
+                            <label>Full Name</label>
+                            <input type="text" [(ngModel)]="editLeadForm.name" name="name" class="form-control" placeholder="E.g. John Doe">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group flex-1">
+                            <label>Email Address</label>
+                            <input type="email" [(ngModel)]="editLeadForm.email" name="email" class="form-control" placeholder="E.g. john@example.com">
+                        </div>
+                        <div class="form-group flex-1">
+                            <label>Phone Number</label>
+                            <input type="tel" [(ngModel)]="editLeadForm.phone" name="phone" class="form-control" placeholder="E.g. 555-123-4567">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group flex-1">
+                            <label>Sales Rep</label>
+                            <input type="text" [(ngModel)]="editLeadForm.salesRep" name="salesRep" class="form-control" placeholder="E.g. William Smith">
+                        </div>
+                        <div class="form-group flex-1">
+                            <label>Department</label>
+                            <input type="text" [(ngModel)]="editLeadForm.department" name="department" class="form-control" placeholder="E.g. Sales">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="modal-footer">
+                <button class="modal-cancel-btn" (click)="closeEditLeadModal()">Cancel</button>
+                <button class="modal-ok-btn" (click)="saveEditLeadForm()">Save Changes</button>
+            </div>
+        </div>
+    </div>
+</ng-container>
