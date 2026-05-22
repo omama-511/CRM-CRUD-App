@@ -274,7 +274,7 @@ return [
      *   E.g set it to 'utf8mb4' in MariaDB and MySQL and 'utf8' for any
      *   other RDBMS.
      */
-    'Datasources' => [
+   'Datasources' => [
         /*
          * These configurations should contain permanent settings used
          * by all environments.
@@ -290,12 +290,11 @@ return [
             'driver' => Mysql::class,
             'persistent' => false,
             'timezone' => 'UTC',
-
+            'url' => env('DATABASE_URL', null), // <-- WE ADDED THIS LINE HERE!
             /*
              * For MariaDB/MySQL the internal default changed from utf8 to utf8mb4, aka full utf-8 support
              */
             'encoding' => 'utf8mb4',
-
             /*
              * If your MySQL server is configured with `skip-character-set-client-handshake`
              * then you MUST use the `flags` config to set your charset encoding.
@@ -304,7 +303,6 @@ return [
             'flags' => [],
             'cacheMetadata' => true,
             'log' => false,
-
             /*
              * Set identifier quoting to true if you are using reserved words or
              * special characters in your table or column names. Enabling this
@@ -314,7 +312,6 @@ return [
              * manipulated before being executed.
              */
             'quoteIdentifiers' => false,
-
             /*
              * During development, if using MySQL < 5.6, uncommenting the
              * following line could boost the speed at which schema metadata is
@@ -324,7 +321,6 @@ return [
              */
             //'init' => ['SET GLOBAL innodb_stats_on_metadata = 0'],
         ],
-
         /*
          * The test connection is used during the test suite.
          */
@@ -341,7 +337,6 @@ return [
             //'init' => ['SET GLOBAL innodb_stats_on_metadata = 0'],
         ],
     ],
-
     /*
      * Configures logging options
      */
