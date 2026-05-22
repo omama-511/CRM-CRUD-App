@@ -70,23 +70,27 @@ class PagesController extends AppController
             throw new NotFoundException();
         }
     }
-        public function migrate(): ?Response
+    public function migrate(): ?Response
     {
-        $cakeBin = ROOT . '/bin/cake.php';
-        $output = [];
-        $returnVar = 0;
-
-        // Execute the migration command
-        exec("php $cakeBin migrations migrate 2>&1", $output, $returnVar);
-
-        $status = $returnVar === 0 ? "SUCCESS" : "FAILED";
-        $console = implode("\n", $output);
+        $this->autoRender = false;
+        
+        try {
+            // Native CakePHP Migrations class execution
+            $migrations = new \Migrations\Migrations();
+            $success = $migrations->migrate();
+            
+            $status = $success !== false ? "SUCCESS" : "FAILED";
+            $message = "Migrations executed successfully and natively inside the PHP process!";
+        } catch (\Exception $e) {
+            $status = "FAILED";
+            $message = "Error: " . $e->getMessage() . "\n\nStack Trace:\n" . $e->getTraceAsString();
+        }
 
         return $this->response->withType('html')->withStringBody("
             <html><head><title>Database Migration</title></head><body style='font-family:sans-serif; padding: 20px;'>
-            <h1>Database Migration Status: <span style='color:" . ($returnVar === 0 ? 'green' : 'red') . ";'>$status</span></h1>
-            <h3>Console Output:</h3>
-            <pre style='background:#f4f4f4; padding:15px; border-radius:5px; border:1px solid #ddd;'>$console</pre>
+            <h1>Database Migration Status: <span style='color:" . ($status === 'SUCCESS' ? 'green' : 'red') . ";'>$status</span></h1>
+            <h3>Result Details:</h3>
+            <pre style='background:#f4f4f4; padding:15px; border-radius:5px; border:1px solid #ddd;'>" . h($message) . "</pre>
             </body></html>
         ");
     }
