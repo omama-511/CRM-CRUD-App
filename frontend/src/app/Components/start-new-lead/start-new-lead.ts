@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Router, RouterModule } from '@angular/router';
+import { API_BASE_URL } from '../../config';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
 
@@ -54,7 +55,7 @@ export class StartNewLead {
   onSubmit() {
     if (this.leadForm.valid) {
       const headers = { 'Accept': 'application/json', 'Content-Type': 'application/json' };
-      this.http.post('http://localhost:8765/leads/add', this.leadForm.value, { headers }).subscribe({
+      this.http.post(`${API_BASE_URL}/leads/add`, this.leadForm.value, { headers }).subscribe({
         next: (response: any) => {
           this.snackBar.open('Lead Saved successfully!', 'Close', { 
             duration: 3000, 

@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy, inject, signal, WritableSignal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
+import { API_BASE_URL } from '../../config';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -232,7 +233,7 @@ export class Dashboard implements OnInit, OnDestroy {
 
   fetchLeads() {
     const headers = { 'Accept': 'application/json' };
-    this.http.get('http://localhost:8765/leads', { headers }).subscribe({
+    this.http.get(`${API_BASE_URL}/leads`, { headers }).subscribe({
       next: (response: any) => {
         if (response && response.status === 'success' && response.data && response.data.leads) {
           // Map backend data to frontend format
@@ -291,7 +292,7 @@ export class Dashboard implements OnInit, OnDestroy {
     };
 
     const headers = { 'Accept': 'application/json', 'Content-Type': 'application/json' };
-    this.http.put(`http://localhost:8765/leads/edit/${currentLead.id}`, payload, { headers }).subscribe({
+    this.http.put(`${API_BASE_URL}/leads/edit/${currentLead.id}`, payload, { headers }).subscribe({
       next: (res) => {
         this.snackBar.open('Lead inline update saved successfully', 'Close', { 
           duration: 3000, panelClass: ['success-snackbar'], horizontalPosition: 'end', verticalPosition: 'bottom' 
@@ -336,7 +337,7 @@ export class Dashboard implements OnInit, OnDestroy {
     };
 
     const headers = { 'Accept': 'application/json', 'Content-Type': 'application/json' };
-    this.http.put(`http://localhost:8765/leads/edit/${this.editLeadForm.id}`, payload, { headers }).subscribe({
+    this.http.put(`${API_BASE_URL}/leads/edit/${this.editLeadForm.id}`, payload, { headers }).subscribe({
       next: (res) => {
         this.snackBar.open('Lead details updated successfully', 'Close', { 
           duration: 3000, panelClass: ['success-snackbar'], horizontalPosition: 'end', verticalPosition: 'bottom' 
@@ -356,7 +357,7 @@ export class Dashboard implements OnInit, OnDestroy {
   deleteLead(id: number) {
     if (confirm('Are you sure you want to delete this lead? This cannot be undone.')) {
       const headers = { 'Accept': 'application/json' };
-      this.http.delete(`http://localhost:8765/leads/delete/${id}`, { headers }).subscribe({
+      this.http.delete(`${API_BASE_URL}/leads/delete/${id}`, { headers }).subscribe({
         next: (res) => {
           this.snackBar.open('Lead deleted successfully', 'Close', { 
             duration: 3000, panelClass: ['success-snackbar'], horizontalPosition: 'end', verticalPosition: 'bottom' 

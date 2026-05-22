@@ -10,6 +10,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { Subject } from 'rxjs';
+import { API_BASE_URL } from '../../config';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 
 @Component({
@@ -31,7 +32,7 @@ export class Header {
         if (query.length < 3) {
           return [ { leads: [] } ];
         }
-        return this.http.get(`http://localhost:8765/leads?q=${query}`, {
+        return this.http.get(`${API_BASE_URL}/leads?q=${query}`, {
           headers: { 'Accept': 'application/json' }
         });
       })
