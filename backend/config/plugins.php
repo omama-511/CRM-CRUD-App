@@ -30,7 +30,7 @@
 return [
     'DebugKit' => ['onlyDebug' => true],
     'Bake' => ['onlyCli' => true, 'optional' => true],
-    'Migrations' => ['onlyCli' => true],
+    'Migrations' => [],
 
     // Additional plugins here
 ];
