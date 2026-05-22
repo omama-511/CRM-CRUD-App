@@ -65,24 +65,24 @@ class Application extends BaseApplication
     public function middleware(MiddlewareQueue $middlewareQueue): MiddlewareQueue
     {
         $middlewareQueue
+            // Add simple CORS middleware at the very top of the queue
+            ->add(function ($request, $handler) {
+                if ($request->getMethod() === 'OPTIONS') {
+                    $response = new \Cake\Http\Response();
+                    return $response->withHeader('Access-Control-Allow-Origin', '*')
+                                         ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
+                                         ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization');
+                }
+                
+                $response = $handler->handle($request);
+                return $response->withHeader('Access-Control-Allow-Origin', '*')
+                                     ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
+                                     ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization');
+            })
+
             // Catch any exceptions in the lower layers,
             // and make an error page/response
             ->add(new ErrorHandlerMiddleware(Configure::read('Error'), $this))
-
-            // Add simple CORS middleware early in the queue
-            ->add(function ($request, $handler) {
-                $response = $handler->handle($request);
-                $response = $response->withHeader('Access-Control-Allow-Origin', '*')
-                                     ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
-                                     ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization');
-                
-                if ($request->is('options')) {
-                    // Stop further processing and return empty response with headers for OPTIONS requests
-                    return $response->withStringBody('')->withStatus(200);
-                }
-                
-                return $response;
-            })
 
             // Validate Host header to prevent Host Header Injection attacks.
 
