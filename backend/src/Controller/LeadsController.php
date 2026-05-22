@@ -27,7 +27,7 @@ class LeadsController extends AppController
             'maxLimit' => 100
         ];
 
-        $query = $this->Leads->find()->order(['id' => 'DESC']);
+        $query = $this->Leads->find()->orderBy(['id' => 'DESC']);
 
         $q = $this->request->getQuery('q');
         if ($q) {
