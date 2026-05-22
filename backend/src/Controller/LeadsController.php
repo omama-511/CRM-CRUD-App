@@ -31,10 +31,16 @@ class LeadsController extends AppController
 
         $q = $this->request->getQuery('q');
         if ($q) {
-            $searchQuery = $q . '*';
             $query->where([
-                "MATCH(first_name, last_name, company_name, email, phone) AGAINST(:search IN BOOLEAN MODE)"
-            ])->bind(':search', $searchQuery, 'string');
+                'OR' => [
+                    'first_name LIKE' => '%' . $q . '%',
+                    'last_name LIKE' => '%' . $q . '%',
+                    'company_name LIKE' => '%' . $q . '%',
+                    'email LIKE' => '%' . $q . '%',
+                    'phone LIKE' => '%' . $q . '%',
+                    'cell LIKE' => '%' . $q . '%',
+                ]
+            ]);
         }
 
         $leads = $this->paginate($query);
