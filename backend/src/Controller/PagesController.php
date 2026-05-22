@@ -70,4 +70,24 @@ class PagesController extends AppController
             throw new NotFoundException();
         }
     }
+        public function migrate(): ?Response
+    {
+        $cakeBin = dirname(dirname(dirname(__DIR__))) . '/bin/cake.php';
+        $output = [];
+        $returnVar = 0;
+
+        // Execute the migration command
+        exec("php $cakeBin migrations migrate 2>&1", $output, $returnVar);
+
+        $status = $returnVar === 0 ? "SUCCESS" : "FAILED";
+        $console = implode("\n", $output);
+
+        return $this->response->withType('html')->withStringBody("
+            <html><head><title>Database Migration</title></head><body style='font-family:sans-serif; padding: 20px;'>
+            <h1>Database Migration Status: <span style='color:" . ($returnVar === 0 ? 'green' : 'red') . ";'>$status</span></h1>
+            <h3>Console Output:</h3>
+            <pre style='background:#f4f4f4; padding:15px; border-radius:5px; border:1px solid #ddd;'>$console</pre>
+            </body></html>
+        ");
+    }
 }
