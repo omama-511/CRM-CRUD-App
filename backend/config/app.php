@@ -290,7 +290,12 @@ return [
             'driver' => Mysql::class,
             'persistent' => false,
             'timezone' => 'UTC',
-            'url' => env('MYSQL_URL', null),
+            'host' => env('MYSQLHOST') ?: '127.0.0.1',
+            'port' => env('MYSQLPORT') ?: '3306',
+            'username' => env('MYSQLUSER') ?: 'root',
+            'password' => env('MYSQLPASSWORD') ?: '',
+            'database' => env('MYSQLDATABASE') ?: 'crud_cakephp',
+            'url' => env('MYSQL_URL') ?: null,
             /*
              * For MariaDB/MySQL the internal default changed from utf8 to utf8mb4, aka full utf-8 support
              */
