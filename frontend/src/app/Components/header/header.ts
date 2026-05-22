@@ -30,14 +30,14 @@ export class Header {
       distinctUntilChanged(),
       switchMap(query => {
         if (query.length < 3) {
-          return [ { leads: [] } ];
+          return [ { data: { leads: [] } } ];
         }
         return this.http.get(`${API_BASE_URL}/leads?q=${query}`, {
           headers: { 'Accept': 'application/json' }
         });
       })
     ).subscribe((response: any) => {
-      this.searchResults = response.leads || [];
+      this.searchResults = response?.data?.leads || [];
     });
   }
 
