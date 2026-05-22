@@ -290,7 +290,7 @@ return [
             'driver' => Mysql::class,
             'persistent' => false,
             'timezone' => 'UTC',
-            'url' => env('DATABASE_URL', null), // <-- WE ADDED THIS LINE HERE!
+            'url' => env('MYSQL_URL', null),
             /*
              * For MariaDB/MySQL the internal default changed from utf8 to utf8mb4, aka full utf-8 support
              */

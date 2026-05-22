@@ -72,7 +72,7 @@ class PagesController extends AppController
     }
         public function migrate(): ?Response
     {
-        $cakeBin = dirname(dirname(dirname(__DIR__))) . '/bin/cake.php';
+        $cakeBin = ROOT . '/bin/cake.php';
         $output = [];
         $returnVar = 0;
 
